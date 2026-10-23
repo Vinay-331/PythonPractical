@@ -447,4 +447,302 @@ print_cubes_dict()
 
 
 ## Output
-x
+<img width="1390" height="308" alt="image" src="https://github.com/user-attachments/assets/58a025af-f609-4503-98b2-dc302d063926" />
+
+# Practical 11: Tuple Operations
+
+**Question:** Consider a tuple t1=(1, 2, 5, 7, 9, 2, 4, 6, 8, 10). Write a program to perform following operations:
+
+- a. Print half the values of the tuple in one line and the other half in the next line.
+- b. Print another tuple whose values are even numbers in the given tuple.
+- c. Concatenate a tuple t2=(11,13,15) with t1.
+- d. Return maximum and minimum value from this tuple
+
+
+## Code:
+```python
+
+t1 = (1, 2, 5, 7, 9, 2, 4, 6, 8, 10)
+print("t1 =", t1)
+
+# a) first half on one line, second half on the next
+mid = len(t1) // 2
+print("\na) First half :", *t1[:mid])
+print("   Second half:", *t1[mid:])
+
+# b) tuple of even numbers
+evens = tuple(x for x in t1 if x % 2 == 0)
+print("\nb) Even numbers tuple:", evens)
+
+# c) concatenation with t2
+t2 = (11, 13, 15)
+t3 = t2 + t1
+print("\nc) t2 + t1 =", t3)
+
+
+# d) maximum and minimum
+def max_min(t):
+    return max(t), min(t)
+
+
+maximum, minimum = max_min(t1)
+print("\nd) Maximum value:", maximum)
+print("   Minimum value:", minimum)
+```
+## Code implementation
+<img width="1225" height="945" alt="image" src="https://github.com/user-attachments/assets/a3411e96-ed24-4074-9727-7fe87ddcb930" />
+
+
+## Output
+<img width="1361" height="762" alt="image" src="https://github.com/user-attachments/assets/52d7b2e4-419e-4e9f-9df7-128089b61592" />
+
+# Practical 12:  Employee Class
+
+**Question:** Define a class Employee that stores information about employees in the company. The class should contain the following:
+
+- (i) data members: count (to keep a record of all the objects being created for this class) and for every employee: an employee number, Name, Dept, Basic, DA and HRA.
+- (ii) function members:
+  - a. `__init__` method to initialize and/or update the members. Add statements to ensure that the program is terminated if any of Basic, DA and HRA is set to a negative value.
+  - b. function salary, that returns salary as the sum of Basic, DA and HRA.
+  - c. `__del__` function to decrease the number of objects created for the class.
+  - d. `__str__` function to display the details of an employee along with the salary of an employee in a proper format.
+
+## Code:
+```python
+import sys
+
+
+class Employee:
+    count = 0                                   # class attribute: number of live Employee objects
+
+    def __init__(self, emp_no, name, dept, basic, da, hra):
+        self._counted = False
+        self.emp_no = emp_no
+        self.name = name
+        self.dept = dept
+        self.update(basic, da, hra)             # validates Basic, DA and HRA
+        Employee.count += 1                     # reached only if the values were valid
+        self._counted = True
+
+    def update(self, basic, da, hra):
+        """Set (or change) Basic, DA and HRA. A negative value terminates the program."""
+        if basic < 0 or da < 0 or hra < 0:
+            print("Error: Basic, DA and HRA cannot be negative. Terminating the program.")
+            sys.exit(1)
+        self.basic = basic
+        self.da = da
+        self.hra = hra
+
+    def salary(self):
+        return self.basic + self.da + self.hra
+
+    def __del__(self):
+        if getattr(self, "_counted", False):    # an object that failed validation was never counted
+            Employee.count -= 1
+
+    def __str__(self):
+        return (f"Employee No : {self.emp_no}\n"
+                f"Name        : {self.name}\n"
+                f"Department  : {self.dept}\n"
+                f"Basic       : Rs. {self.basic:,.2f}\n"
+                f"DA          : Rs. {self.da:,.2f}\n"
+                f"HRA         : Rs. {self.hra:,.2f}\n"
+                f"Salary      : Rs. {self.salary():,.2f}")
+
+
+e1 = Employee(101, "Shashant", "Computer Science", 30000, 12000, 8000)
+e2 = Employee(102, "Vinay", "Mathematics", 28000, 11000, 7500)
+e3 = Employee(103, "Neha Singh", "Physics", 32000, 12500, 8500)
+
+print(e1)
+print("-" * 40)
+print(e2)
+print("-" * 40)
+print(e3)
+print("-" * 40)
+print("Employees created:", Employee.count)
+
+del e3                                          # object destroyed -> __del__ runs
+print("After deleting one employee:", Employee.count)
+
+e1.update(35000, 14000, 9000)                   # update the pay components of e1
+print("\nAfter updating e1:")
+print(e1)
+
+print("\nTrying to create an employee with a negative DA ...")
+e4 = Employee(104, "Test User", "Chemistry", 25000, -500, 7000)
+print("This line is never reached.")
+```
+## Code implementation
+<img width="698" height="891" alt="image" src="https://github.com/user-attachments/assets/c5f65fd5-55ae-44c5-b7bf-a0c5b6a77813" />
+
+
+## Output
+<img width="1201" height="906" alt="image" src="https://github.com/user-attachments/assets/b5a86de8-30b9-4c37-b422-ee85013ec7f7" />
+<img width="1067" height="896" alt="image" src="https://github.com/user-attachments/assets/7521f5c6-a243-48b9-bc66-74af30adbf1b" />
+
+# Practical 13: Class 2DPoint
+
+**Question:** Write a program to define a class "2DPoint" with coordinates x and y as attributes. Create relevant methods and print the objects. Also define a method distance to calculate the distance between any two point objects.
+
+
+## Code:
+```python
+import math
+
+
+class Point_2D:
+    def __init__(self, x=0, y=0):
+        self.x = x
+        self.y = y
+
+    def __str__(self):
+        return f"Point2D({self.x}, {self.y})"
+
+    def distance(self, other):
+        """Distance between this point and another point."""
+        return math.sqrt((self.x - other.x) ** 2 + (self.y - other.y) ** 2)
+
+    def move(self, dx, dy):
+        """Shift the point by (dx, dy)."""
+        self.x += dx
+        self.y += dy
+
+    def midpoint(self, other):
+        return Point_2D((self.x + other.x) / 2, (self.y + other.y) / 2)
+
+
+if __name__ == "__main__":
+    p1 = Point_2D(7, 11)
+    p2 = Point_2D(8, 12)
+    print("p1 =", p1)
+    print("p2 =", p2)
+    print("Distance between p1 and p2 =", p1.distance(p2))
+    print("Midpoint of p1 and p2 =", p1.midpoint(p2))
+
+    p1.move(2, 3)
+    print("After moving p1 by (2, 3): p1 =", p1)
+
+    x1, y1 = map(float, input("\nEnter x and y of the first point: ").split())
+    x2, y2 = map(float, input("Enter x and y of the second point: ").split())
+    a, b = Point_2D(x1, y1), Point_2D(x2, y2)
+    print(a, "and", b)
+    print("Distance =", round(a.distance(b), 4))
+```
+## Code implementation
+<img width="1087" height="1010" alt="image" src="https://github.com/user-attachments/assets/ef1426dc-fb11-4159-85d1-665790352667" />
+
+## Output
+<img width="1333" height="548" alt="image" src="https://github.com/user-attachments/assets/3f1dd586-5ac0-4f68-9729-0d9a52db9da4" />
+
+
+
+
+# Practical 14: Class 3DPoint (Inheritance)
+
+**Question:** Inherit the above class to create a "3Dpoint" with additional attribute z. Override the method defined in "2DPoint" class, to calculate distance between two points of the "3DPoint" class.
+
+
+## Code:
+```python
+import math
+from Practical2DPoint import Point_2D
+
+
+class Point3D(Point_2D):
+    def __init__(self, x=0, y=0, z=0):
+        super().__init__(x, y)  
+        self.z = z
+
+    def __str__(self):
+        return f"Point3D({self.x}, {self.y}, {self.z})"
+
+    def distance(self, other):
+        """Overridden: distance in 3-D space."""
+        return math.sqrt((self.x - other.x) ** 2 +
+                         (self.y - other.y) ** 2 +
+                         (self.z - getattr(other, "z", 0)) ** 2)
+
+    def move(self, dx, dy, dz):
+        """Overridden: shift the point by (dx, dy, dz)."""
+        super().move(dx, dy)
+        self.z += dz
+
+
+if __name__ == "__main__":
+    p1 = Point3D(1, 2, 3)
+    p2 = Point3D(4, 6, 15)
+    print("p1 =", p1)
+    print("p2 =", p2)
+    print("Distance between p1 and p2 =", p1.distance(p2))
+
+    p1.move(1, 1, 1)
+    print("After moving p1 by (1, 1, 1): p1 =", p1)
+    q1, q2 = Point_2D(0, 0), Point_2D(3, 4)
+    print("2D distance:", q1.distance(q2))
+    print("Point3D is a Point2D:", isinstance(p1, Point_2D))
+    x1, y1, z1 = map(float, input("\nEnter x, y and z of the first point: ").split())
+    x2, y2, z2 = map(float, input("Enter x, y and z of the second point: ").split())
+    a, b = Point3D(x1, y1, z1), Point3D(x2, y2, z2)
+    print(a, "and", b)
+    print("Distance =", round(a.distance(b), 4))
+```
+## Code implementation
+<img width="947" height="1032" alt="image" src="https://github.com/user-attachments/assets/be68061c-da13-4023-96a3-ef8db1205088" />
+
+## Output
+<img width="1345" height="790" alt="image" src="https://github.com/user-attachments/assets/46596798-bea0-4597-b809-02eff4fc6b17" />
+
+
+
+# Practical 15: Exception Handling
+
+**Question:** Write a program to accept a name from a user. Raise and handle appropriate exception(s) if the text entered by the user contains digits and/or special characters.
+
+
+## Code:
+```python
+
+class InvalidNameError(Exception):
+    """Raised when the name has digits or special characters."""
+    pass
+
+
+def validate_name(name):
+    if name.strip() == "":
+        raise ValueError("Name cannot be empty.")
+    has_digit = any(ch.isdigit() for ch in name)
+    has_special = any(not (ch.isalpha() or ch.isspace()) and not ch.isdigit() for ch in name)
+    if has_digit and has_special:
+        raise InvalidNameError("Name contains digits and special characters.")
+    if has_digit:
+        raise InvalidNameError("Name contains digits.")
+    if has_special:
+        raise InvalidNameError("Name contains special characters.")
+    return name
+
+
+while True:
+    user_name = input("Enter your name: ")
+    try:
+        validate_name(user_name)
+    except InvalidNameError as e:
+        print("Invalid name ->", e, "Please try again.\n")
+    except ValueError as e:
+        print("Error ->", e, "Please try again.\n")
+    else:
+        print("Hello,", user_name.strip() + "! Your name is valid.")
+        break
+    finally:
+        print("(validation finished)")
+```
+## Code implementation
+<img width="1246" height="982" alt="image" src="https://github.com/user-attachments/assets/aa478765-1520-4f6b-91c5-7cd14188453d" />
+
+
+## Output
+<img width="1378" height="876" alt="image" src="https://github.com/user-attachments/assets/735035c7-6590-4221-8e96-27c4cf53b157" />
+
+
+
+
